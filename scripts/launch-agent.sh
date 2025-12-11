@@ -28,14 +28,23 @@ if [ -f "$CONFIG_FILE" ] && command -v jq &> /dev/null; then
     TERMINAL=$(jq -r '.terminal // "ghostty"' "$CONFIG_FILE")
     SHELL_CMD=$(jq -r '.shell // "bash"' "$CONFIG_FILE")
     CLAUDE_CMD=$(jq -r '.claudeCommand // "claude --dangerously-skip-permissions"' "$CONFIG_FILE")
+    ALIAS=$(jq -r '.alias // ""' "$CONFIG_FILE")
 else
     TERMINAL="ghostty"
     SHELL_CMD="bash"
     CLAUDE_CMD="claude --dangerously-skip-permissions"
+    ALIAS=""
 fi
 
 # Note: CLAUDE_CMD defaults to "claude --dangerously-skip-permissions" for autonomous operation
-# Users can customize in config.json (e.g., use an alias like "cc")
+# Users can customize in config.json (e.g., use an alias like "cx")
+
+# If alias is configured, define it before running claude command
+if [ -n "$ALIAS" ]; then
+    ALIAS_DEF="alias $ALIAS='$CLAUDE_CMD'; "
+else
+    ALIAS_DEF=""
+fi
 
 # Expand ~ in path
 WORKTREE_PATH="${WORKTREE_PATH/#\~/$HOME}"
@@ -74,9 +83,9 @@ if [ "$SHELL_CMD" = "fish" ]; then
 else
     # bash/zsh syntax
     if [ -n "$TASK" ]; then
-        INNER_CMD="cd '$WORKTREE_PATH' && echo 'Worktree: $PROJECT / $BRANCH' && echo 'Task: $TASK' && echo '' && $CLAUDE_CMD"
+        INNER_CMD="${ALIAS_DEF}cd '$WORKTREE_PATH' && echo 'Worktree: $PROJECT / $BRANCH' && echo 'Task: $TASK' && echo '' && $CLAUDE_CMD"
     else
-        INNER_CMD="cd '$WORKTREE_PATH' && echo 'Worktree: $PROJECT / $BRANCH' && echo '' && $CLAUDE_CMD"
+        INNER_CMD="${ALIAS_DEF}cd '$WORKTREE_PATH' && echo 'Worktree: $PROJECT / $BRANCH' && echo '' && $CLAUDE_CMD"
     fi
 fi
 
@@ -96,7 +105,7 @@ case "$TERMINAL" in
 tell application "iTerm2"
     create window with default profile
     tell current session of current window
-        write text "cd '$WORKTREE_PATH' && $CLAUDE_CMD"
+        write text "${ALIAS_DEF}cd '$WORKTREE_PATH' && echo 'Worktree: $PROJECT / $BRANCH' && $CLAUDE_CMD"
     end tell
 end tell
 EOF

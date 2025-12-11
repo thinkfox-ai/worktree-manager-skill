@@ -86,9 +86,9 @@ fi
 # Parse ports into JSON array
 PORTS_JSON=$(echo "$PORTS" | tr ',' '\n' | jq -R 'tonumber' | jq -s .)
 
-# Format task
+# Format task (properly escape for JSON)
 if [ -n "$TASK" ]; then
-    TASK_JSON="\"$TASK\""
+    TASK_JSON=$(jq -n --arg t "$TASK" '$t')
 else
     TASK_JSON="null"
 fi

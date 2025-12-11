@@ -94,7 +94,7 @@ fi
 # Update registry with newly allocated ports
 TMP=$(mktemp)
 PORTS_JSON=$(printf '%s\n' "${FOUND_PORTS[@]}" | jq -R 'tonumber' | jq -s .)
-jq ".portPool.allocated = ((.portPool.allocated // []) + $PORTS_JSON | unique | sort_by(.))" "$REGISTRY" > "$TMP" && mv "$TMP" "$REGISTRY"
+jq ".portPool.allocated = ((.portPool.allocated // []) + $PORTS_JSON | unique | sort)" "$REGISTRY" > "$TMP" && mv "$TMP" "$REGISTRY"
 
 # Output the ports (space-separated)
 echo "${FOUND_PORTS[*]}"
