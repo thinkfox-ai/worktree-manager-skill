@@ -1,6 +1,7 @@
 {
-  "terminal": "ghostty",
-  "shell": "bash",
+  "terminal": "iterm2",
+  "alias": "cx",
+  "shell": "zsh",
   "claudeCommand": "claude --dangerously-skip-permissions",
   "portPool": {
     "start": 8100,
