@@ -569,6 +569,7 @@ Location: `~/.claude/skills/worktree-manager/config.json`
 ```json
 {
   "terminal": "ghostty",
+  "alias": "cx",
   "shell": "bash",
   "claudeCommand": "claude --dangerously-skip-permissions",
   "portPool": {
@@ -583,6 +584,7 @@ Location: `~/.claude/skills/worktree-manager/config.json`
 
 **Options:**
 - **terminal**: `ghostty`, `iterm2`, `tmux`, `wezterm`, `kitty`, `alacritty`
+- **alias**: Optional shortcut alias defined in new terminal sessions (e.g., `cx` as alias for `claudeCommand`)
 - **shell**: `bash`, `zsh`, `fish` (adjust syntax in claudeCommand if using fish)
 - **claudeCommand**: The command to launch Claude Code (default uses `--dangerously-skip-permissions` for autonomous operation)
 
